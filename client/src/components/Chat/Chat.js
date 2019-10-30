@@ -3,6 +3,7 @@ import querystring from 'query-string'
 import io from 'socket.io-client'
 import Bar from '../Bar/Bar.js'
 import Input from '../Input/Input.js'
+import Messages from '../Input/Messages.js'
 import './Chat.css'
 
 
@@ -60,6 +61,7 @@ console.log(message , messages);
         <div className="container">
          <Bar room={room}/>
          <Input message={message} setMessage={setMessage} sendMessage={sendMessage}  />
+         <Messages />
         </div>
     </div>
 )
