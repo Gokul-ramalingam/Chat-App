@@ -1,5 +1,6 @@
 const express = require('express');
 const socket = require('socket.io');
+const cors = require('cors');
 const http = require('http');
 const router = require('./router/route');
 const { addUser,removeUser,getUser,getRoom } = require('./helper/users');
@@ -10,6 +11,9 @@ const app = express();
 const server = http.createServer(app);
 const io = socket(server);
 
+app.use(router);
+app.use(cors());
+
 
 io.on('connection', (socket) =>{
    socket.on('join',({ name , room },callback)=>{
@@ -17,10 +21,12 @@ io.on('connection', (socket) =>{
 
       if(error) return callback(error);
 
-      socket.emit("message", {user : "admin",text : `${ user.name },welcome to ${ user.room } chat room` })
+       socket.emit("message", {user : "admin",text : `${ user.name },welcome to ${ user.room } chat room` })
        socket.broadcast.to(user.room).emit('message',{user: 'admin',text : `${ user.name } has joined`})
 
       socket.join(user.room);
+
+      io.to(user.room).emit('roomData', { room: user.room, users: getRoom(user.room) });
 
       callback();
    })
@@ -30,17 +36,18 @@ io.on('connection', (socket) =>{
      
      io.to(user.room).emit('message',{user: user.name, text:message});
 
+     io.to(user.room).emit('roomData', { room: user.room, users: getRoom(user.room) });
+
      callback();
    })
 
     socket.on('disconnect', () =>{
-        console.log("Disconnection has been established!!!");
+       const user = removeUser(socket.id);
+
+       if(user)
+          io.to(user.room).emit('message',{user:'admin',text:`${user.name} has left`})
     })
 })
-
-
-
-app.use(router);
 
 server.listen(port,()=>{
     console.log("Server is running on port "+port);
