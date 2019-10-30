@@ -13,6 +13,10 @@ const io = socket(server);
 io.on('connection', (socket) =>{
     console.log("New connection has been established!!!");
 
+   socket.on('join',({ name , room },callback)=>{
+      console.log(name , room);
+   })
+
     socket.on('disconnect', () =>{
         console.log("Disconnection has been established!!!");
     })
