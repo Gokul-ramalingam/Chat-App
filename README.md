@@ -10,9 +10,9 @@ This repository consists of a real time chat application developed using Socket.
 
 ## Preview
 
-![images](one.png)
-![images](two.png)
-![images](three.png)
+![images](images/one.png)
+![images](images/two.png)
+![images](images/three.png)
 
 ## Author
 
